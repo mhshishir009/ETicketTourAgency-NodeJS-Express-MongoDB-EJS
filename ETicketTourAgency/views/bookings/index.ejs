@@ -1,0 +1,206 @@
+<%- include("../partials/header", { title }) %>
+
+    <section class="page-header">
+        <div class="page-title-group">
+            <h1>Bookings</h1>
+            <p>Manage passenger bookings, payments, tickets, and cancellations.</p>
+        </div>
+
+        <a href="/bookings/create" class="btn btn-primary">
+            Create Booking
+        </a>
+    </section>
+
+    <section class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="dashboard-label">Total Bookings</div>
+
+            <div class="dashboard-value">
+                <%= bookings.length %>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-label">Confirmed</div>
+
+            <div class="dashboard-value">
+                <%= bookings.filter(item=> item.bookingStatus === "Confirmed").length %>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-label">Paid</div>
+
+            <div class="dashboard-value">
+                <%= bookings.filter(item=> item.paymentStatus === "Paid").length %>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-label">Cancelled</div>
+
+            <div class="dashboard-value">
+                <%= bookings.filter(item=> item.bookingStatus === "Cancelled").length %>
+            </div>
+        </div>
+    </section>
+
+    <section class="card table-card">
+
+        <% if (bookings.length===0) { %>
+
+            <div class="empty-state">
+                No bookings found.
+            </div>
+
+            <% } else { %>
+
+                <div class="table-wrapper">
+
+                    <table class="data-table">
+
+                        <thead>
+                            <tr>
+                                <th>Ticket Number</th>
+                                <th>Passenger</th>
+                                <th>Phone</th>
+                                <th>Package</th>
+                                <th>Route</th>
+                                <th>Seat</th>
+                                <th>Fare</th>
+                                <th>Payment</th>
+                                <th>Booking Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% bookings.forEach((booking)=> { %>
+
+                                <tr>
+
+                                    <td>
+                                        <%= booking.ticketNumber %>
+                                    </td>
+
+                                    <td>
+                                        <%= booking.passengerName %>
+                                    </td>
+
+                                    <td>
+                                        <%= booking.phoneNumber %>
+                                    </td>
+
+                                    <td>
+                                        <% if (booking.tourPackage) { %>
+                                            <%= booking.tourPackage.title %>
+                                                <% } else { %>
+                                                    Package unavailable
+                                                    <% } %>
+                                    </td>
+
+                                    <td>
+                                        <% if (booking.tourPackage) { %>
+                                            <%= booking.tourPackage.fromLocation %>
+                                                →
+                                                <%= booking.tourPackage.toLocation %>
+                                                    <% } else { %>
+                                                        Not available
+                                                        <% } %>
+                                    </td>
+
+                                    <td>
+                                        <%= booking.seatNumber %>
+                                    </td>
+
+                                    <td>
+                                        BDT <%= Number(booking.fare).toFixed(2) %>
+                                    </td>
+
+                                    <td>
+                                        <form action="/bookings/payment-status/<%= booking._id %>" method="POST"
+                                            class="payment-update-form">
+                                            <select name="paymentStatus" class="form-control payment-select" required>
+                                                <option value="Pending" <%=booking.paymentStatus==="Pending"
+                                                    ? "selected" : "" %>
+                                                    >
+                                                    Pending
+                                                </option>
+
+                                                <option value="Paid" <%=booking.paymentStatus==="Paid" ? "selected" : ""
+                                                    %>
+                                                    >
+                                                    Paid
+                                                </option>
+
+                                                <option value="Refunded" <%=booking.paymentStatus==="Refunded"
+                                                    ? "selected" : "" %>
+                                                    >
+                                                    Refunded
+                                                </option>
+                                            </select>
+
+                                            <button type="submit" class="btn btn-primary btn-small">
+                                                Update
+                                            </button>
+                                        </form>
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-<%= booking.bookingStatus.toLowerCase() %>">
+                                            <%= booking.bookingStatus %>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="action-group">
+
+                                            <a href="/bookings/ticket/<%= booking._id %>"
+                                                class="btn btn-primary btn-small">
+                                                Ticket
+                                            </a>
+
+                                            <% if (booking.bookingStatus==="Confirmed" ) { %>
+
+                                                <form action="/bookings/cancel/<%= booking._id %>" method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                                    <button type="submit" class="btn btn-danger btn-small">
+                                                        Cancel
+                                                    </button>
+                                                </form>
+
+                                                <% } %>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                                <% }) %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <% } %>
+
+    </section>
+
+    <style>
+        .payment-update-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 190px;
+        }
+
+        .payment-select {
+            min-width: 110px;
+            padding: 7px 10px;
+        }
+    </style>
+
+    <%- include("../partials/footer") %>

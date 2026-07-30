@@ -1,0 +1,319 @@
+<%- include("../partials/header", { title }) %>
+
+    <% const journeyDateValue=tourPackage.journeyDate ? new Date(tourPackage.journeyDate).toISOString().split("T")[0]
+        : "" ; %>
+
+        <section class="page-header">
+            <div class="page-title-group">
+                <h1>Edit Tour Package</h1>
+                <p>Update route, schedule, fare, seats, operator, and package image.</p>
+            </div>
+
+            <a href="/tour-packages" class="btn btn-secondary">
+                Back to List
+            </a>
+        </section>
+
+        <section class="card form-card">
+            <div class="card-body">
+
+                <% if (error) { %>
+                    <div class="alert alert-danger">
+                        <%= error %>
+                    </div>
+                    <% } %>
+
+                        <form action="/tour-packages/edit/<%= tourPackage._id %>" method="POST"
+                            enctype="multipart/form-data">
+
+                            <div class="form-grid">
+
+                                <div class="form-group">
+                                    <label for="packageCode" class="form-label">
+                                        Package Code
+                                    </label>
+
+                                    <input type="text" id="packageCode" name="packageCode" class="form-control"
+                                        value="<%= tourPackage.packageCode %>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="operatorName" class="form-label">
+                                        Operator Name
+                                    </label>
+
+                                    <input type="text" id="operatorName" name="operatorName" class="form-control"
+                                        value="<%= tourPackage.operatorName || "" %>"
+                                        placeholder="Biman Bangladesh, Green Line, Shohagh" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="transportType" class="form-label">
+                                        Transport Type
+                                    </label>
+
+                                    <select id="transportType" name="transportType" class="form-control" required>
+                                        <option value="Bus" <%=tourPackage.transportType==="Bus" ? "selected" : "" %>
+                                            >
+                                            Bus
+                                        </option>
+
+                                        <option value="Train" <%=tourPackage.transportType==="Train" ? "selected" : ""
+                                            %>
+                                            >
+                                            Train
+                                        </option>
+
+                                        <option value="Launch" <%=tourPackage.transportType==="Launch" ? "selected" : ""
+                                            %>
+                                            >
+                                            Launch
+                                        </option>
+
+                                        <option value="Flight" <%=tourPackage.transportType==="Flight" ? "selected" : ""
+                                            %>
+                                            >
+                                            Flight
+                                        </option>
+
+                                        <option value="Tour Package" <%=tourPackage.transportType==="Tour Package"
+                                            ? "selected" : "" %>
+                                            >
+                                            Tour Package
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="status" class="form-label">
+                                        Status
+                                    </label>
+
+                                    <select id="status" name="status" class="form-control" required>
+                                        <option value="Active" <%=tourPackage.status==="Active" ? "selected" : "" %>
+                                            >
+                                            Active
+                                        </option>
+
+                                        <option value="Inactive" <%=tourPackage.status==="Inactive" ? "selected" : "" %>
+                                            >
+                                            Inactive
+                                        </option>
+
+                                        <option value="Completed" <%=tourPackage.status==="Completed" ? "selected" : ""
+                                            %>
+                                            >
+                                            Completed
+                                        </option>
+
+                                        <option value="Cancelled" <%=tourPackage.status==="Cancelled" ? "selected" : ""
+                                            %>
+                                            >
+                                            Cancelled
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fromLocation" class="form-label">
+                                        From Location
+                                    </label>
+
+                                    <input type="text" id="fromLocation" name="fromLocation" class="form-control"
+                                        value="<%= tourPackage.fromLocation %>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="toLocation" class="form-label">
+                                        To Location
+                                    </label>
+
+                                    <input type="text" id="toLocation" name="toLocation" class="form-control"
+                                        value="<%= tourPackage.toLocation %>" required>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="title" class="form-label">
+                                        Package Title
+                                    </label>
+
+                                    <input type="text" id="title" name="title" class="form-control"
+                                        value="<%= tourPackage.title %>" required>
+
+                                    <span class="form-help">
+                                        Generated automatically from the route but remains editable.
+                                    </span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="journeyDate" class="form-label">
+                                        Journey Date
+                                    </label>
+
+                                    <input type="date" id="journeyDate" name="journeyDate" class="form-control"
+                                        value="<%= journeyDateValue %>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fare" class="form-label">
+                                        Ticket Fare
+                                    </label>
+
+                                    <input type="number" id="fare" name="fare" class="form-control" min="0" step="0.01"
+                                        value="<%= tourPackage.fare %>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="departureTime" class="form-label">
+                                        Departure Time
+                                    </label>
+
+                                    <input type="time" id="departureTime" name="departureTime" class="form-control"
+                                        value="<%= tourPackage.departureTime %>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="arrivalTime" class="form-label">
+                                        Arrival Time
+                                    </label>
+
+                                    <input type="time" id="arrivalTime" name="arrivalTime" class="form-control"
+                                        value="<%= tourPackage.arrivalTime || "" %>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="totalSeats" class="form-label">
+                                        Total Seats
+                                    </label>
+
+                                    <input type="number" id="totalSeats" name="totalSeats" class="form-control" min="1"
+                                        value="<%= tourPackage.totalSeats %>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="availableSeats" class="form-label">
+                                        Available Seats
+                                    </label>
+
+                                    <input type="number" id="availableSeats" name="availableSeats" class="form-control"
+                                        min="0" max="<%= tourPackage.totalSeats %>"
+                                        value="<%= tourPackage.availableSeats %>" required>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="image" class="form-label">
+                                        Package Image
+                                    </label>
+
+                                    <input type="file" id="image" name="image" class="form-control"
+                                        accept=".jpg,.jpeg,.png,.webp">
+
+                                    <span class="form-help">
+                                        Select a new image only when you want to replace the current image.
+                                    </span>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <div class="image-preview-box">
+
+                                        <img id="imagePreview" src="<%= tourPackage.image || "" %>"
+                                            alt="Package image preview" <%=tourPackage.image ? "" : "hidden" %>
+                                        >
+
+                                        <div id="imagePlaceholder" class="image-preview-placeholder"
+                                            <%=tourPackage.image ? "hidden" : "" %>
+                                            >
+                                            No package image selected.
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="description" class="form-label">
+                                        Description
+                                    </label>
+
+                                    <textarea id="description" name="description" class="form-control"
+                                        placeholder="Enter package details"><%= tourPackage.description || "" %></textarea>
+                                </div>
+
+                            </div>
+
+                            <div class="button-row">
+                                <button type="submit" class="btn btn-primary">
+                                    Update Tour Package
+                                </button>
+
+                                <a href="/tour-packages" class="btn btn-secondary">
+                                    Cancel
+                                </a>
+                            </div>
+
+                        </form>
+
+            </div>
+        </section>
+
+        <script>
+            const fromLocationInput = document.getElementById("fromLocation");
+            const toLocationInput = document.getElementById("toLocation");
+            const titleInput = document.getElementById("title");
+            const totalSeatsInput = document.getElementById("totalSeats");
+            const availableSeatsInput = document.getElementById("availableSeats");
+            const imageInput = document.getElementById("image");
+            const imagePreview = document.getElementById("imagePreview");
+            const imagePlaceholder = document.getElementById("imagePlaceholder");
+
+            const updateTitle = () => {
+                const fromLocation = fromLocationInput.value.trim();
+                const toLocation = toLocationInput.value.trim();
+
+                if (fromLocation && toLocation) {
+                    titleInput.value = `${fromLocation} to ${toLocation}`;
+                }
+            };
+
+            fromLocationInput.addEventListener("input", updateTitle);
+            toLocationInput.addEventListener("input", updateTitle);
+
+            totalSeatsInput.addEventListener("input", () => {
+                availableSeatsInput.max = totalSeatsInput.value;
+
+                if (
+                    Number(availableSeatsInput.value) >
+                    Number(totalSeatsInput.value)
+                ) {
+                    availableSeatsInput.value = totalSeatsInput.value;
+                }
+            });
+
+            availableSeatsInput.addEventListener("input", () => {
+                const totalSeats = Number(totalSeatsInput.value);
+                const availableSeats = Number(availableSeatsInput.value);
+
+                if (totalSeats && availableSeats > totalSeats) {
+                    availableSeatsInput.value = totalSeats;
+                }
+            });
+
+            imageInput.addEventListener("change", () => {
+                const file = imageInput.files[0];
+
+                if (!file) {
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreview.hidden = false;
+                    imagePlaceholder.hidden = true;
+                };
+
+                reader.readAsDataURL(file);
+            });
+        </script>
+
+        <%- include("../partials/footer") %>

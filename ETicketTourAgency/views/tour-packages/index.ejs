@@ -1,0 +1,163 @@
+<%- include("../partials/header", { title }) %>
+
+    <section class="page-header">
+        <div class="page-title-group">
+            <h1>Tour Packages</h1>
+            <p>Manage operators, routes, schedules, fares, seats, and package status.</p>
+        </div>
+
+        <a href="/tour-packages/create" class="btn btn-primary">
+            Add Tour Package
+        </a>
+    </section>
+
+    <section class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="dashboard-label">Total Packages</div>
+            <div class="dashboard-value">
+                <%= tourPackages.length %>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-label">Active Packages</div>
+            <div class="dashboard-value">
+                <%= tourPackages.filter(item=> item.status === "Active").length %>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-label">Available Seats</div>
+            <div class="dashboard-value">
+                <%= tourPackages.reduce((total, item)=> total + Number(item.availableSeats), 0) %>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-label">Completed Packages</div>
+            <div class="dashboard-value">
+                <%= tourPackages.filter(item=> item.status === "Completed").length %>
+            </div>
+        </div>
+    </section>
+
+    <section class="card table-card">
+
+        <% if (tourPackages.length===0) { %>
+
+            <div class="empty-state">
+                No tour packages found.
+            </div>
+
+            <% } else { %>
+
+                <div class="table-wrapper">
+
+                    <table class="data-table">
+
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Code</th>
+                                <th>Operator</th>
+                                <th>Title</th>
+                                <th>Transport</th>
+                                <th>Route</th>
+                                <th>Journey Date</th>
+                                <th>Fare</th>
+                                <th>Seats</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% tourPackages.forEach((tourPackage)=> { %>
+
+                                <tr>
+
+                                    <td>
+                                        <% if (tourPackage.image) { %>
+                                            <img src="<%= tourPackage.image %>" alt="<%= tourPackage.title %>"
+                                                class="table-image">
+                                            <% } else { %>
+                                                No image
+                                                <% } %>
+                                    </td>
+
+                                    <td>
+                                        <%= tourPackage.packageCode %>
+                                    </td>
+
+                                    <td>
+                                        <%= tourPackage.operatorName || "Not assigned" %>
+                                    </td>
+
+                                    <td>
+                                        <%= tourPackage.title %>
+                                    </td>
+
+                                    <td>
+                                        <%= tourPackage.transportType %>
+                                    </td>
+
+                                    <td>
+                                        <%= tourPackage.fromLocation %>
+                                            →
+                                            <%= tourPackage.toLocation %>
+                                    </td>
+
+                                    <td>
+                                        <%= new Date(tourPackage.journeyDate).toLocaleDateString("en-GB") %>
+                                    </td>
+
+                                    <td>
+                                        BDT <%= Number(tourPackage.fare).toFixed(2) %>
+                                    </td>
+
+                                    <td>
+                                        <%= tourPackage.availableSeats %>
+                                            /
+                                            <%= tourPackage.totalSeats %>
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-<%= tourPackage.status.toLowerCase() %>">
+                                            <%= tourPackage.status %>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="action-group">
+
+                                            <a href="/tour-packages/edit/<%= tourPackage._id %>"
+                                                class="btn btn-primary btn-small">
+                                                Edit
+                                            </a>
+
+                                            <form action="/tour-packages/delete/<%= tourPackage._id %>" method="POST"
+                                                onsubmit="return confirm('Are you sure you want to delete this tour package?');">
+                                                <button type="submit" class="btn btn-danger btn-small">
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                                <% }) %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <% } %>
+
+    </section>
+
+    <%- include("../partials/footer") %>
